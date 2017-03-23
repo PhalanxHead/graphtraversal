@@ -1,1 +1,1 @@
-# My project's README
+# Assignment 1 for Design of Algorithms
