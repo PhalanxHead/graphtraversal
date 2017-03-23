@@ -110,5 +110,14 @@ int delete_head(list_t* clist)
 Deletes the node at the head of the list and returns its contents.
 */
 {
-	
+    node_t* hnode;
+    int cdata;
+
+    hnode = clist->head;
+    clist->head = clist->head->next;
+    clist->head->last = NULL;
+    cdata = hnode->data;
+
+    free(hnode);
+    return cdata;
 }
