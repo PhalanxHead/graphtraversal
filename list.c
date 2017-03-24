@@ -105,6 +105,7 @@ formatted correctly.
 	return EXIT_SUCCESS;
 }
 
+
 int delete_head(list_t* clist)
 /*
 Deletes the node at the head of the list and returns its contents.
@@ -113,11 +114,64 @@ Deletes the node at the head of the list and returns its contents.
     node_t* hnode;
     int cdata;
 
+    /* Checks that list element exists, returns NULL if not. */
+    if(!(clist->head)) {
+    	return NULL;
+    }
+
     hnode = clist->head;
     clist->head = clist->head->next;
     clist->head->last = NULL;
     cdata = hnode->data;
 
+    clist->size = (clist->size - 1);
+
     free(hnode);
     return cdata;
+}
+
+
+int delete_foot(list_t* clist)
+/*
+Deletes the node at the foot of the list and returns its contents.
+*/
+{
+    node_t* fnode;
+    int cdata;
+
+	/* Checks that list element exists, returns NULL if not. */
+    if(!(clist->head)) {
+    	return NULL;
+    }
+
+    fnode = clist->foot;
+    clist->foot = clist->foot->last;
+    clist->foot->next = NULL;
+    cdata = fnode->data;
+
+    clist->size = (clist->size - 1);
+
+    free(fnode);
+    return cdata;
+}
+
+void free_list(list_t* clist)
+/*
+Deletes every element in the list then frees the list.
+*/
+{
+	while(clist->size != 0) {
+		delete_head(clist);
+	}
+
+	free(clist);
+	return;
+}
+
+int list_size(list_t* clist)
+/*
+Returns the number of nodes in the list.
+*/
+{
+	return clist->size;
 }
