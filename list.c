@@ -62,7 +62,7 @@ doesn't exist.*/
 
 
 int insert_at_head(list_t* clist, int cdata)
-/* 
+/*
 Inserts data at the head of the list and remaps the list head so the list is
 formatted correctly.
  */
@@ -70,7 +70,7 @@ formatted correctly.
 	node_t* nnode;
 	nnode = new_node();
 
-	/* Reformats the head of the list and inserts the new data at the 
+	/* Reformats the head of the list and inserts the new data at the
 	head. */
 	nnode->next = clist->head;
 	nnode->last = NULL;
@@ -85,7 +85,7 @@ formatted correctly.
 
 
 int insert_at_foot(list_t* clist, int cdata)
-/* 
+/*
 Inserts data at the foot of the list and remaps the list foot so the list is
 formatted correctly.
  */
@@ -93,7 +93,7 @@ formatted correctly.
 	node_t* nnode;
 	nnode = new_node();
 
-	/* Reformats the foot of the list and inserts the new data at the 
+	/* Reformats the foot of the list and inserts the new data at the
 	head. */
 	nnode->next = NULL;
 	nnode->last = clist->foot;

@@ -13,13 +13,13 @@ Creates a new empty list object and returns a pointer to it.
 */
 
 int insert_at_head(list_t* clist, int cdata);
-/* 
+/*
 Inserts data at the head of the list and remaps the list head so the list is
 formatted correctly.
  */
 
 int insert_at_foot(list_t* clist, int cdata);
-/* 
+/*
 Inserts data at the foot of the list and remaps the list foot so the list is
 formatted correctly.
  */

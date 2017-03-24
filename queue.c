@@ -1,13 +1,13 @@
 /*  Author:     Luke Hedt
-    Date:       00/00/2016
-    Name:       
+    StuID:      832153
+    Date:       24/03/2017
+    Name:       queue.c
     Purpose:    
 
     Comments:
 */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "list.h"
 
 int main(int argc, char *argv[])
 {
