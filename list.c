@@ -1,5 +1,6 @@
 /*	Author:		Luke Hedt
 	StuID:		832153
+	Date:		24/02/2017
 	modname:	list.c
 	Purpose:	Contains code for linked list operations.
 */
@@ -116,7 +117,7 @@ Deletes the node at the head of the list and returns its contents.
 
     /* Checks that list element exists, returns NULL if not. */
     if(!(clist->head)) {
-    	return NULL;
+    	exit(EXIT_FAILURE);
     }
 
     hnode = clist->head;
@@ -141,7 +142,7 @@ Deletes the node at the foot of the list and returns its contents.
 
 	/* Checks that list element exists, returns NULL if not. */
     if(!(clist->head)) {
-    	return NULL;
+    	exit(EXIT_FAILURE);
     }
 
     fnode = clist->foot;
