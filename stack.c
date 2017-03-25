@@ -43,6 +43,14 @@ int pop(list_t* cstack)
 	return delete_head(cstack);
 }
 
+int stack_size(list_t* clist)
+/* 
+    Returns the size of the stack.
+*/
+{
+    return list_size(clist);
+}
+
 void purge_stack(list_t* cstack)
 /*
 	Deletes all elements in the stack and frees the stack.

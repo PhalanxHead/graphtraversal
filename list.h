@@ -1,11 +1,17 @@
 /*	Author:		Luke Hedt
 	StuID:		832153
-	Date:		24/02/2017
+	Date:		24/03/2017
 	modname:	list.h
 	Purpose:	Header File for Linked List Ops.
 */
 
+#ifndef LIST_H
+#define LIST_H
+
 #include "list.c"
+
+typedef struct list list_t;
+
 
 list_t* new_list();
 /*
@@ -43,3 +49,5 @@ int list_size(list_t* clist);
 /*
 Returns the number of nodes in the list.
 */
+
+#endif
