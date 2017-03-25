@@ -1,6 +1,6 @@
 /*	Author:		Luke Hedt
 	StuID:		832153
-	Date:		24/02/2017
+	Date:		24/03/2017
 	modname:	list.c
 	Purpose:	Contains code for linked list operations.
 */
