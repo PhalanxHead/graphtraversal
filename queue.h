@@ -1,26 +1,25 @@
 /*	Author:		Luke Hedt
-	StuID:		832153
-	Date:		25/03/2017
-	modname:	queue.h
-	Purpose:	Header File for Queue Ops.
-*/
+ *	StuID:		832153
+ *	Date:		25/03/2017
+ *	Name:		queue.h
+ *	Purpose:	Header File for Queue Ops.
+ */
 
 #ifndef QUEUE_H
 #define QUEUE_H
 
-#include "queue.c"
 
 list_t* new_queue();
 /* 
     Creates a new queue object, then returns a pointer to it.
 */
 
-void enqueue(list_t* cqueue, int cdata);
+int enqueue(list_t* cqueue, int cdata);
 /*
     Adds data to the back of the Queue.
 */
 
-int dequeue(list_t* cdata, int cdata);
+int dequeue(list_t* cqueue, int cdata);
 /*
     Removes data from the front of the Queue.
 */

@@ -1,16 +1,27 @@
 /*	Author:		Luke Hedt
-	StuID:		832153
-	Date:		24/03/2017
-	modname:	list.h
-	Purpose:	Header File for Linked List Ops.
-*/
+ *	StuID:		832153
+ *	Date:		24/03/2017
+ *	Name:	list.h
+ *	Purpose:	Header File for Linked List Ops.
+ */
 
 #ifndef LIST_H
 #define LIST_H
 
-#include "list.c"
 
-typedef struct list list_t;
+/* List Struct Definitions */
+typedef struct node {
+	int data;
+	struct node* next;
+	struct node* last;
+} node_t;
+
+
+typedef struct list {
+	node_t* head;
+	node_t* foot;
+	int size;
+} list_t;
 
 
 list_t* new_list();

@@ -1,16 +1,13 @@
 /*  Author:     Luke Hedt
-    StuID:      832153
-    Date:       24/03/2017
-    Name:       stack.h
-    Purpose:    Header File for Stack Operations
-
-    Comments:
-*/
+ *  StuID:      832153
+ *  Date:       24/03/2017
+ *  Name:       stack.h
+ *  Purpose:    Header File for Stack Operations
+ */
 
 #ifndef STACK_H
 #define STACK_H
 
-#include "stack.c"
 
 list_t* new_stack();
 /*

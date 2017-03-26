@@ -1,13 +1,12 @@
 /*  Author:     Luke Hedt
-    StuID:      832153
-    Date:       24/03/2017
-    Name:       queue.c
-    Purpose:    Contains code for Queue Operations
-
-    Comments:
-*/
+ *  StuID:      832153
+ *  Date:       24/03/2017
+ *  Name:       queue.c
+ *  Purpose:    Contains code for Queue Operations
+ */
 
 #include "list.h"
+#include "queue.h"
 
 
 list_t* new_queue()
@@ -19,17 +18,16 @@ list_t* new_queue()
 }
 
 
-void enqueue(list_t* cqueue, int cdata)
+int enqueue(list_t* cqueue, int cdata)
 /*
     Adds data to the back of the Queue.
 */
 {
-    insert_at_foot(cqueue, cdata);
-    return;
+    return insert_at_foot(cqueue, cdata);
 }
 
 
-int dequeue(list_t* cdata, int cdata)
+int dequeue(list_t* cqueue, int cdata)
 /*
     Removes data from the front of the Queue.
 */

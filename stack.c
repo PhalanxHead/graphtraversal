@@ -1,13 +1,14 @@
 /*  Author:     Luke Hedt
-    StuID:      832153
-    Date:       24/03/2017
-    Name:       stack.c
-    Purpose:    Contains code for Stack Operations
+ *  StuID:      832153
+ *  Date:       24/03/2017
+ *  Name:       stack.c
+ *  Purpose:    Contains code for Stack Operations
+ */
 
-    Comments:
-*/
-
+#include <stdio.h>
+#include <stdlib.h>
 #include "list.h"
+#include "stack.h"
 
 list_t* new_stack()
 /*
