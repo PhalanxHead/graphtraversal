@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "traverse.h"
+#include "graph.h"
 #include "list.h"
 #include "stack.h"
 #include "queue.h"
@@ -19,9 +20,13 @@ void print_dfs(Graph* graph, int source_id)
 /* Conducts a Depth First Search and prints each element as it's visited.
  * This is a non-recursive implementation. */
 {
+    /* VARIABLE DECLARATIONS */
     int vert = source_id;
-
+    int i;
+    int* visit;
+    int order = graph->maxn;
     list_t* dep_stack;
+
     dep_stack = new_stack();
     /* Error detection, just in case.  */
     if(!(push(dep_stack, vert))) {
@@ -29,13 +34,20 @@ void print_dfs(Graph* graph, int source_id)
         exit(EXIT_FAILURE);
     }
 
+    /* Create Array to store Visited values in. */
+    visit = (int*)malloc((order)*sizeof(int));
+    for(i=0; i<order; i++) {
+        visit[i] = 0;
+    }
+
     while(stack_size(dep_stack)) {
        vert = pop(dep_stack); 
-       /* if vert isn't discovered.
-        *   label v as discovered
-        *   for all edges from v to w in G.adjacentEdges(vert)
+       if(!(visit[vert])) {
+           visit[vert] = 1;
+        /*   for all edges from v to w in G.adjacentEdges(vert)
         *       push(dep_stack, w)
         */
+       }
     }
 }
 
