@@ -26,26 +26,18 @@ void print_dfs(Graph* graph, int source_id)
  * This is a non-recursive implementation. */
 {
     /* VARIABLE DECLARATIONS */
-    int vert_id = source_id;
-    Edge *c_edge, *n_edge;
-    int i;
+    int cur_vert_id = source_id, order = graph->maxn;
+    int new_vert_id, i;
+    Edge *new_edge;
     int* visit;
-    int order = graph->maxn;
+    /* Stack Def */
     list_t* dep_stack;
-
     dep_stack = new_stack();
-
 
     /* Error detection, just in case.  */
     if(!dep_stack) {
     	fprintf(stderr, "ERROR: New Stack could not be created!");
     	exit(FAIL);
-    }
-
-    /* Extra Sanity Check */
-    if(!(push(dep_stack, vert_id))) {
-    	fprintf(stderr, "ERROR: Could not push data on the stack!");
-        exit(FAIL);
     }
 
     /* Create Array to store Visited values in. */
@@ -54,23 +46,33 @@ void print_dfs(Graph* graph, int source_id)
         visit[i] = 0;
     }
 
+    /* Complete operations on the Source Vertex.*/
+    push(dep_stack, cur_vert_id);
+    printf("%s\n", graph->vertices[source_id]->label);
+    visit[source_id] = 1;
 
-    while(stack_size(dep_stack) > 0) {
-        vert_id = pop(dep_stack); 
-        c_edge = graph->vertices[vert_id]->first_edge;
-        n_edge = c_edge->next_edge;
-        if((visit[vert_id]) == 0) {
-            visit[vert_id] = 1;
-            printf("%s\n", graph->vertices[vert_id]->label);
-            while(n_edge) {
-            	if(!(visit[c_edge->v])) {
-	                push(dep_stack, c_edge->v);
-	            }
-                c_edge = n_edge;
-                n_edge = n_edge->next_edge;
+    /* The loop operates for as long as the stack is non-empty.  */
+    while(stack_size(dep_stack)) {
+    	/* Remove the current vertex from the stack, 
+    	 * Set vars to it's first edge. */
+        cur_vert_id = pop(dep_stack);
+        new_edge = graph->vertices[cur_vert_id]->first_edge;
+        new_vert_id = new_edge->v;
+        
+        while(new_edge) {
+            if(!(visit[new_vert_id])) {
+                visit[new_vert_id] = 1;
+                printf("%s\n", graph->vertices[new_vert_id]->label);
+                push(dep_stack, new_edge->v);
+                new_edge = graph->vertices[new_vert_id]->first_edge;
+                new_vert_id = new_edge->v;
+            } else {
+                new_edge = new_edge->next_edge;
+                new_vert_id = new_edge->v;
             }
         }
     }
+
     free(visit);
     purge_stack(dep_stack);
 }
