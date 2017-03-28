@@ -59,20 +59,28 @@ void print_dfs(Graph* graph, int source_id)
         new_edge = graph->vertices[cur_vert_id]->first_edge;
         new_vert_id = new_edge->v;
         
+        /* Ensure that the algorithm runs once the edges run out. */
         while(new_edge) {
+        	/* Only visit new vertices. */
             if(!(visit[new_vert_id])) {
                 visit[new_vert_id] = 1;
+                /* Print and push the vertex onto the stack. */
                 printf("%s\n", graph->vertices[new_vert_id]->label);
                 push(dep_stack, new_edge->v);
+                /* Hop to the next vertex. */
                 new_edge = graph->vertices[new_vert_id]->first_edge;
                 new_vert_id = new_edge->v;
             } else {
+            	/* Hop to the next vertex if it's been visited. */
                 new_edge = new_edge->next_edge;
-                new_vert_id = new_edge->v;
+                /* Make sure you can actually get the vertext id. */
+                if(new_edge) {
+                	new_vert_id = new_edge->v;
+                }
             }
         }
     }
-
+    /* Free all the borrowed memory you filthy kleptomaniac. */
     free(visit);
     purge_stack(dep_stack);
 }
