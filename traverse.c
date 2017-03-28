@@ -7,6 +7,11 @@
  *  Comments:   
  */
 
+/* Defines. Means that I can return these and use if(!SUCCESS) 
+to verify Output. Ugly, but it works. */
+#define FAIL 0
+#define SUCCESS 1
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "traverse.h"
@@ -22,18 +27,25 @@ void print_dfs(Graph* graph, int source_id)
 {
     /* VARIABLE DECLARATIONS */
     int vert_id = source_id;
-    Edge* c_edge;
+    Edge *c_edge, *n_edge;
     int i;
     int* visit;
     int order = graph->maxn;
     list_t* dep_stack;
-    Edge* n_edge;
 
     dep_stack = new_stack();
+
+
     /* Error detection, just in case.  */
+    if(!dep_stack) {
+    	fprintf(stderr, "ERROR: New Stack could not be created!");
+    	exit(FAIL);
+    }
+
+    /* Extra Sanity Check */
     if(!(push(dep_stack, vert_id))) {
-        fprintf(stderr, "ERROR: Could not push data on the stack!");
-        exit(EXIT_FAILURE);
+    	fprintf(stderr, "ERROR: Could not push data on the stack!");
+        exit(FAIL);
     }
 
     /* Create Array to store Visited values in. */
@@ -42,20 +54,25 @@ void print_dfs(Graph* graph, int source_id)
         visit[i] = 0;
     }
 
-    while(stack_size(dep_stack)) {
+
+    while(stack_size(dep_stack) > 0) {
         vert_id = pop(dep_stack); 
-        printf("%s", graph->vertices[vert_id]->label);
         c_edge = graph->vertices[vert_id]->first_edge;
         n_edge = c_edge->next_edge;
-        if(!(visit[vert_id])) {
+        if((visit[vert_id]) == 0) {
             visit[vert_id] = 1;
+            printf("%s\n", graph->vertices[vert_id]->label);
             while(n_edge) {
-                push(dep_stack, c_edge->v);
+            	if(!(visit[c_edge->v])) {
+	                push(dep_stack, c_edge->v);
+	            }
                 c_edge = n_edge;
                 n_edge = n_edge->next_edge;
             }
-       }
+        }
     }
+    free(visit);
+    purge_stack(dep_stack);
 }
 
 void print_bfs(Graph* graph, int source_id) {

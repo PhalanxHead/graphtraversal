@@ -5,6 +5,13 @@
  *  Purpose:    Contains code for Queue Operations
  */
 
+/* Defines. Means that I can return these and use if(!SUCCESS) 
+to verify Output. Ugly, but it works. */
+#define FAIL 0
+#define SUCCESS 1
+
+#include <stdio.h>
+#include <stdlib.h>
 #include "list.h"
 #include "queue.h"
 
@@ -23,7 +30,15 @@ int enqueue(list_t* cqueue, int cdata)
     Adds data to the back of the Queue.
 */
 {
-    return insert_at_foot(cqueue, cdata);
+    int queued = insert_at_foot(cqueue, cdata);
+
+    /* Sanity Check */
+    if(!queued) {
+        fprintf(stderr, "Unable to queue data!");
+        exit(FAIL);
+    }
+
+    return SUCCESS;
 }
 
 

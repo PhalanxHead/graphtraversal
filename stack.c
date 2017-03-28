@@ -5,6 +5,11 @@
  *  Purpose:    Contains code for Stack Operations
  */
 
+/* Defines. Means that I can return these and use if(!SUCCESS) 
+to verify Output. Ugly, but it works. */
+#define FAIL 0
+#define SUCCESS 1
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "list.h"
@@ -29,11 +34,11 @@ int push(list_t* cstack, int cdata)
 	feed = insert_at_head(cstack, cdata);
 
 	if(!feed) {
-		fprintf(stderr, "ERROR: unable to insert data!");
-		exit(EXIT_FAILURE);
+		fprintf(stderr, "ERROR: unable to push data onto stack!");
+		return FAIL;
 	}
 
-	return EXIT_SUCCESS;
+	return SUCCESS;
 }
 
 int pop(list_t* cstack)
