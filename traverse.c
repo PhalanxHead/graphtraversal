@@ -21,15 +21,17 @@ void print_dfs(Graph* graph, int source_id)
  * This is a non-recursive implementation. */
 {
     /* VARIABLE DECLARATIONS */
-    int vert = source_id;
+    int vert_id = source_id;
+    Edge* c_edge;
     int i;
     int* visit;
     int order = graph->maxn;
     list_t* dep_stack;
+    Edge* n_edge;
 
     dep_stack = new_stack();
     /* Error detection, just in case.  */
-    if(!(push(dep_stack, vert))) {
+    if(!(push(dep_stack, vert_id))) {
         fprintf(stderr, "ERROR: Could not push data on the stack!");
         exit(EXIT_FAILURE);
     }
@@ -41,12 +43,17 @@ void print_dfs(Graph* graph, int source_id)
     }
 
     while(stack_size(dep_stack)) {
-       vert = pop(dep_stack); 
-       if(!(visit[vert])) {
-           visit[vert] = 1;
-        /*   for all edges from v to w in G.adjacentEdges(vert)
-        *       push(dep_stack, w)
-        */
+        vert_id = pop(dep_stack); 
+        printf("%s", graph->vertices[vert_id]->label);
+        c_edge = graph->vertices[vert_id]->first_edge;
+        n_edge = c_edge->next_edge;
+        if(!(visit[vert_id])) {
+            visit[vert_id] = 1;
+            while(n_edge) {
+                push(dep_stack, c_edge->v);
+                c_edge = n_edge;
+                n_edge = n_edge->next_edge;
+            }
        }
     }
 }
