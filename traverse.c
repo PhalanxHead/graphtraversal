@@ -85,8 +85,23 @@ void print_dfs(Graph* graph, int source_id)
     purge_stack(dep_stack);
 }
 
-void print_bfs(Graph* graph, int source_id) {
-	printf("not yet implemented: put code for part 2 here\n");
+void print_bfs(Graph* graph, int source_id) 
+/* Implements a Bredth First Search on the graph starting from the Source_id,
+ * and prints each vertex as they're visited. */
+{
+    int i;
+    int cur_vert_id;
+    Edge* cur_edge;
+
+    /* Queue Definition, With error check for sanity. */
+    list_t* BreQ = new_queue();
+    if(!BreQ) {
+        fprintf(stderr, "ERROR: Queue could not be formed!");
+        exit(FAIL);
+    }
+
+
+
 }
 
 void detailed_path(Graph* graph, int source_id, int destination_id) {
