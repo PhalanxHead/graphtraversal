@@ -111,7 +111,7 @@ void print_bfs(Graph* graph, int source_id)
     visit[cur_vert_id] = 1;
 
 
-    while(queue_size) {
+    while(queue_size(BreQ)) {
         cur_vert_id = dequeue(BreQ);
         cur_edge = graph->vertices[cur_vert_id]->first_edge;
         n_edge = cur_edge->next_edge;
