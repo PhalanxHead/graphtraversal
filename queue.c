@@ -42,7 +42,7 @@ int enqueue(list_t* cqueue, int cdata)
 }
 
 
-int dequeue(list_t* cqueue, int cdata)
+int dequeue(list_t* cqueue)
 /*
     Removes data from the front of the Queue.
 */

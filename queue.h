@@ -19,7 +19,7 @@ int enqueue(list_t* cqueue, int cdata);
     Adds data to the back of the Queue.
 */
 
-int dequeue(list_t* cqueue, int cdata);
+int dequeue(list_t* cqueue);
 /*
     Removes data from the front of the Queue.
 */

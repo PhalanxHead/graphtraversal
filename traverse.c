@@ -4,10 +4,10 @@
  *  Name:       traverse.c
  *  Purpose:    Contains code for the First Design of Algorithms Assignment.
  *
- *  Comments:   
+ *  Comments:
  */
 
-/* Defines. Means that I can return these and use if(!SUCCESS) 
+/* Defines. Means that I can return these and use if(!SUCCESS)
 to verify Output. Ugly, but it works. */
 #define FAIL 0
 #define SUCCESS 1
@@ -21,7 +21,7 @@ to verify Output. Ugly, but it works. */
 #include "queue.h"
 
 
-void print_dfs(Graph* graph, int source_id) 
+void print_dfs(Graph* graph, int source_id)
 /* Conducts a Depth First Search and prints each element as it's visited.
  * This is a non-recursive implementation. */
 {
@@ -53,12 +53,12 @@ void print_dfs(Graph* graph, int source_id)
 
     /* The loop operates for as long as the stack is non-empty.  */
     while(stack_size(dep_stack)) {
-    	/* Remove the current vertex from the stack, 
+    	/* Remove the current vertex from the stack,
     	 * Set vars to it's first edge. */
         cur_vert_id = pop(dep_stack);
         new_edge = graph->vertices[cur_vert_id]->first_edge;
         new_vert_id = new_edge->v;
-        
+
         /* Ensure that the algorithm runs once the edges run out. */
         while(new_edge) {
         	/* Only visit new vertices. */
@@ -85,13 +85,15 @@ void print_dfs(Graph* graph, int source_id)
     purge_stack(dep_stack);
 }
 
-void print_bfs(Graph* graph, int source_id) 
+void print_bfs(Graph* graph, int source_id)
 /* Implements a Bredth First Search on the graph starting from the Source_id,
  * and prints each vertex as they're visited. */
 {
     int i;
-    int cur_vert_id;
-    Edge* cur_edge;
+    int cur_vert_id = source_id;
+    int next_vert_id;
+    int* visit = (int*)malloc((graph->maxn)*sizeof(int));
+    Edge *cur_edge, *n_edge;
 
     /* Queue Definition, With error check for sanity. */
     list_t* BreQ = new_queue();
@@ -100,8 +102,33 @@ void print_bfs(Graph* graph, int source_id)
         exit(FAIL);
     }
 
+    for(i=0; i<(graph->maxn); i++) {
+        visit[i] = 0;
+    }
+
+    /* Enqueue the Source node to begin the algorithm */
+    enqueue(BreQ, cur_vert_id);
+    visit[cur_vert_id] = 1;
 
 
+    while(queue_size) {
+        cur_vert_id = dequeue(BreQ);
+        cur_edge = graph->vertices[cur_vert_id]->first_edge;
+        n_edge = cur_edge->next_edge;
+        next_vert_id = n_edge->v;
+        printf("%s\n", graph->vertices[cur_vert_id]->label);
+
+        while(n_edge) {
+            if(!(visit[next_vert_id])) {
+                enqueue(BreQ, next_vert_id);
+                visit[cur_vert_id] = 1;
+            }
+            cur_edge = n_edge;
+            n_edge = cur_edge->next_edge;
+        }
+    }
+    free(visit);
+    queue_purge(BreQ);
 }
 
 void detailed_path(Graph* graph, int source_id, int destination_id) {
