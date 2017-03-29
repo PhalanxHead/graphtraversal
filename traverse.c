@@ -90,8 +90,8 @@ void print_bfs(Graph* graph, int source_id)
  * and prints each vertex as they're visited. */
 {
     int i;
-    int cur_vert_id = source_id;
-    int next_vert_id;
+    int source_vert_id = source_id;
+    int child_vert_id;
     int* visit = (int*)malloc((graph->maxn)*sizeof(int));
     Edge *cur_edge, *n_edge;
 
@@ -107,24 +107,35 @@ void print_bfs(Graph* graph, int source_id)
     }
 
     /* Enqueue the Source node to begin the algorithm */
-    enqueue(BreQ, cur_vert_id);
-    visit[cur_vert_id] = 1;
-
+    enqueue(BreQ, source_vert_id);
+    visit[source_vert_id] = 1;
 
     while(queue_size(BreQ)) {
-        cur_vert_id = dequeue(BreQ);
-        cur_edge = graph->vertices[cur_vert_id]->first_edge;
+/*      Dequeue current vertex;
+ *      for all edges connected to current vertex
+ *          if unvisited
+ *              mark as visited and enqueue; */
+        source_vert_id = dequeue(BreQ);
+        printf("%s\n", graph->vertices[source_vert_id]->label);
+        child_vert_id = graph->vertices[source_vert_id]->first_edge->v;
+        cur_edge = graph->vertices[source_vert_id]->first_edge;
         n_edge = cur_edge->next_edge;
-        next_vert_id = n_edge->v;
-        printf("%s\n", graph->vertices[cur_vert_id]->label);
+        i = 1;
+        while(1) {
+            if(!(visit[child_vert_id])) {
+                enqueue(BreQ, child_vert_id);
+                visit[child_vert_id] = 1;
+            }
 
-        while(n_edge) {
-            if(!(visit[next_vert_id])) {
-                enqueue(BreQ, next_vert_id);
-                visit[cur_vert_id] = 1;
+            if(!i) {
+                break;
             }
             cur_edge = n_edge;
-            n_edge = cur_edge->next_edge;
+            child_vert_id = cur_edge->v;
+            n_edge = n_edge->next_edge;
+            if(!n_edge) {
+                i = 0;
+            }
         }
     }
     free(visit);
