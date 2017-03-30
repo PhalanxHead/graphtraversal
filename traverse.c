@@ -137,7 +137,7 @@ void print_bfs(Graph* graph, int source_id)
                 dist[child_vert_id] = dist[source_vert_id] + 1;
             }
             cur_edge = n_edge;
-            /* Quick check that we aren't on the last node. Ensures all the 
+            /* Quick check that we aren't on the last node. Ensures all the
              * children are enqueued correctly. */
             if(cur_edge) {
                 child_vert_id = cur_edge->v;
@@ -189,7 +189,7 @@ void detailed_path(Graph* graph, int source_id, int destination_id)
     	/* Remove the current vertex from the stack,
     	 * Set vars to it's first edge. */
         cur_vert_id = pop(dep_stack);
-        
+
         new_edge = graph->vertices[cur_vert_id]->first_edge;
         new_vert_id = new_edge->v;
 
@@ -201,7 +201,7 @@ void detailed_path(Graph* graph, int source_id, int destination_id)
                 /* Update the cumulative weight */
                 cu_weight += new_edge->weight;
                 /* Print and push the vertex onto the stack. */
-                printf("%s (%dkm)\n", graph->vertices[new_vert_id]->label, 
+                printf("%s (%dkm)\n", graph->vertices[new_vert_id]->label,
                         cu_weight);
                 /**/
                 if(new_vert_id == destination_id) {
@@ -236,29 +236,18 @@ void all_paths(Graph* graph, int source_id, int destination_id) {
 /*****************************************************************************/
 
 void shortest_path(Graph* graph, int source_id, int destination_id)
-/* Prints the shorttest path between 2 vertices.
- * Based on Lecture notes, hence Arr is the set R. */
+
 {
-/* 
- *     Initialise	all	dist(u)= ∞
- *         Put	the	source	vertex	s	in	R
- *         For	all	edges	(s,v),	update	dist(v)
- *             While R	does not contain every	vertex
- *                 u = vertex not in R	with the smallest dist	value
- *                 Put	u	in	R
- *                 For	all	edges	(u,	v)
- *                     dist(v) = min(dist(u) + wuv, dist(v))
- *  */
-     /* VARIABLE DECLARATIONS */
+/* VARIABLE DECLARATIONS */
     int source_vert_id = source_id;
     int i, child_vert_id, cu_weight = 0;
     int* dist = (int*)malloc((graph->maxn)*sizeof(int));
     Edge *cur_edge, *n_edge;
 
     /* Queue Definition, With error check for sanity. */
-    list_t* Arr = new_list();
-    if(!Arr) {
-        fprintf(stderr, "ERROR: List could not be formed!");
+    list_t* BreQ = new_queue();
+    if(!BreQ) {
+        fprintf(stderr, "ERROR: Queue could not be formed!");
         exit(FAIL);
     }
 
@@ -267,13 +256,40 @@ void shortest_path(Graph* graph, int source_id, int destination_id)
         dist[i] = -1;
     }
 
-    /* Add the Source node to begin the algorithm */
-    insert_at_head(Arr, source_vert_id);
+    /* Enqueue the Source node to begin the algorithm */
+    enqueue(BreQ, source_vert_id);
     dist[source_vert_id] = 0;
 
-    while(source_vert_id != destination_id) {
-        
+    /* Commence The Algorithm! Runs for as long as the queue is populated */
+    while(queue_size(BreQ)) {
+    	/* Open the source vertex and print it's name. */
+        source_vert_id = dequeue(BreQ);
+        printf("%s\n", graph->vertices[source_vert_id]->label);
+        /* Set up the variables needed to step through the children. */
+        child_vert_id = graph->vertices[source_vert_id]->first_edge->v;
+        cur_edge = graph->vertices[source_vert_id]->first_edge;
+        n_edge = cur_edge->next_edge;
+
+        /* Steps through the connected nodes and enqueues anything that hasn't
+         * already been added. */
+        while(cur_edge) {
+            if(dist[child_vert_id] < 0) {
+                enqueue(BreQ, child_vert_id);
+                dist[child_vert_id] = dist[source_vert_id] + 1;
+            }
+            cur_edge = n_edge;
+            /* Quick check that we aren't on the last node. Ensures all the
+             * children are enqueued correctly. */
+            if(cur_edge) {
+                child_vert_id = cur_edge->v;
+                n_edge = n_edge->next_edge;
+            }
+        }
     }
+    /* Return all the space you borrowed you filthy kleptomaniac. */
+    free(dist);
+    queue_purge(BreQ);
+
 }
 
 /*****************************************************************************/
