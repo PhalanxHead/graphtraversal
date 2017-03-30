@@ -235,7 +235,10 @@ void all_paths(Graph* graph, int source_id, int destination_id) {
 
 /*****************************************************************************/
 
-void shortest_path(Graph* graph, int source_id, int destination_id) {
+void shortest_path(Graph* graph, int source_id, int destination_id)
+/* Prints the shorttest path between 2 vertices.
+ * Based on Lecture notes, hence Arr is the set R. */
+{
 /* 
  *     Initialise	all	dist(u)= ∞
  *         Put	the	source	vertex	s	in	R
@@ -253,9 +256,9 @@ void shortest_path(Graph* graph, int source_id, int destination_id) {
     Edge *cur_edge, *n_edge;
 
     /* Queue Definition, With error check for sanity. */
-    list_t* BreQ = new_queue();
-    if(!BreQ) {
-        fprintf(stderr, "ERROR: Queue could not be formed!");
+    list_t* Arr = new_list();
+    if(!Arr) {
+        fprintf(stderr, "ERROR: List could not be formed!");
         exit(FAIL);
     }
 
@@ -264,10 +267,13 @@ void shortest_path(Graph* graph, int source_id, int destination_id) {
         dist[i] = -1;
     }
 
-    /* Enqueue the Source node to begin the algorithm */
-    enqueue(BreQ, source_vert_id);
+    /* Add the Source node to begin the algorithm */
+    insert_at_head(Arr, source_vert_id);
     dist[source_vert_id] = 0;
 
+    while(source_vert_id != destination_id) {
+        
+    }
 }
 
 /*****************************************************************************/
