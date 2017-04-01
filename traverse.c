@@ -26,6 +26,58 @@ to verify Output. Ugly, but it works. */
 
 /*****************************************************************************/
 
+void print_path(Graph* graph, list_t* path)
+/* Prints all the items in the path list. */
+{
+	node_t* c_node = (node_t*)malloc(sizeof(node_t));
+
+	c_node = path->foot;
+
+	while(c_node != path->head) {
+		printf("%s, ", graph->vertices[c_node->data]->label);
+		c_node = c_node->last;
+	}
+	printf("%s\n", graph->vertices[c_node->data]->label);
+}
+
+/*****************************************************************************/
+
+void printAllPathsUtil(Graph* graph, int u_id, int destination_id, 
+	int* visited, list_t* path)
+/* Recursive Element of Part 4 */
+{
+    int i;
+    Edge *cur_edge, *n_edge;
+
+    cur_edge = graph->vertices[u_id]->first_edge;
+    n_edge = cur_edge->next_edge;
+
+	/* Mark current node as visited and store in path */
+	visited[u_id] = 1;
+	push(path, u_id);
+
+	/* If u = dest, print the current path */
+	if(u_id == destination_id) {
+		print_path(graph, path);
+	} else {
+		/* If not destination, recur for all adjacent vertices. */
+		while(cur_edge) {
+			 if(!visited[cur_edge->v]) {
+				printAllPathsUtil(graph, cur_edge->v, destination_id, 
+					visited, path);
+				}
+			cur_edge = n_edge;
+			if(cur_edge) {
+				n_edge = n_edge->next_edge;
+			}
+		}
+	}
+	pop(path);
+	visited[u_id] = 0;
+}
+
+/*****************************************************************************/
+
 int min2(int i1, int i2)
 /* Returns the minimum of 2 integers */
 {
@@ -35,10 +87,12 @@ int min2(int i1, int i2)
     return i2;
 }
 
+/*****************************************************************************/
+
 int minD(int* arr, int* Q, int arr_size)
 /* Returns the index of the minimum Vertex */
 {
-    int ind, c_min = -1, i = 0;
+    int ind, c_min = -1, i;
     for(i=0; i<arr_size; i++) {
         /* Skip if not in Q */
         if(!Q[i]) {
@@ -264,8 +318,21 @@ void detailed_path(Graph* graph, int source_id, int destination_id)
 
 /*****************************************************************************/
 
-void all_paths(Graph* graph, int source_id, int destination_id) {
-	printf("not yet implemented: put code for part 4 here\n");
+void all_paths(Graph* graph, int source_id, int destination_id) 
+/* Recursively prints all paths between source and destination. Code based on:
+ * http://www.geeksforgeeks.org/find-paths-given-source-destination
+*/
+{
+	int* visited = (int*)malloc(graph->maxn * sizeof(int));
+	int i;
+	list_t* path = new_stack();
+
+	for(i=0; i<graph->maxn; i++) {
+		visited[i] = 0;
+	}
+
+	printAllPathsUtil(graph, source_id, destination_id, visited, path);
+
 }
 
 /*****************************************************************************/
@@ -302,12 +369,11 @@ void shortest_path(Graph* graph, int source_id, int destination_id)
         Q[source_vert_id] = 0;
         Q_size -= 1;
 
-        printf("Q_size = %d", Q_size);
-
         cur_edge = graph->vertices[source_vert_id]->first_edge;
         child_vert_id = cur_edge->v;
         n_edge = cur_edge->next_edge;
 
+        printf("cur_vert = %s\n", graph->vertices[source_vert_id]->label);
         while(cur_edge) {
             alt = dist[source_vert_id] + cur_edge->weight;
             if((alt < dist[child_vert_id]) || (dist[child_vert_id] == -1)) {
@@ -321,9 +387,14 @@ void shortest_path(Graph* graph, int source_id, int destination_id)
             }
         }
     }
+
+    for(i=0; i<graph->maxn; i++) {
+        printf("%s: prev = %s (%dkm)\n", graph->vertices[i]->label,  
+                graph->vertices[prev[i]]->label, dist[i]);
+    }
     cur_id = prev[destination_id];
     path_stack = new_stack();
-    while(dist[cur_id] >= 0) {
+    while(cur_id != source_id) {
         push(path_stack, cur_id);
         cur_id = prev[cur_id];
     }
