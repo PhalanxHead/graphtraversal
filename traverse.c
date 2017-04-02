@@ -42,7 +42,7 @@ void print_path(Graph* graph, list_t* path)
 
 /*****************************************************************************/
 
-void printAllPathsUtil(Graph* graph, int u_id, int destination_id, 
+void print_all_paths_recurse(Graph* graph, int u_id, int destination_id, 
 	int* visited, list_t* path)
 /* Recursive Element of Part 4 */
 {
@@ -60,12 +60,12 @@ void printAllPathsUtil(Graph* graph, int u_id, int destination_id,
 	if(u_id == destination_id) {
 		print_path(graph, path);
 	} else {
-		/* If not destination, recur for all adjacent vertices. */
+        /* If not destination, recurse for all adjacent vertices. */
 		while(cur_edge) {
-			 if(!visited[cur_edge->v]) {
-				printAllPathsUtil(graph, cur_edge->v, destination_id, 
+			if(!visited[cur_edge->v]) {
+				print_all_paths_recurse(graph, cur_edge->v, destination_id, 
 					visited, path);
-				}
+			}
 			cur_edge = n_edge;
 			if(cur_edge) {
 				n_edge = n_edge->next_edge;
@@ -321,18 +321,23 @@ void detailed_path(Graph* graph, int source_id, int destination_id)
 void all_paths(Graph* graph, int source_id, int destination_id) 
 /* Recursively prints all paths between source and destination. Code based on:
  * http://www.geeksforgeeks.org/find-paths-given-source-destination
-*/
+ */
 {
+    /* VARIABLE/OBJECT DECLARATIONS */
 	int* visited = (int*)malloc(graph->maxn * sizeof(int));
 	int i;
 	list_t* path = new_stack();
 
+    /* Initialise all nodes as unvisited. */
 	for(i=0; i<graph->maxn; i++) {
 		visited[i] = 0;
 	}
 
-	printAllPathsUtil(graph, source_id, destination_id, visited, path);
+    /* Call the Recursive element of the algrithm */
+	print_all_paths_recurse(graph, source_id, destination_id, visited, path);
 
+    free(visited);
+    purge_stack(path);
 }
 
 /*****************************************************************************/
