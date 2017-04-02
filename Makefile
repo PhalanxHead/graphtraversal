@@ -27,7 +27,7 @@ clean:
 
 STUDENTNUM = 832153
 SUBMISSION = Makefile report.pdf main.c graph.h graph.c traverse.h traverse.c \
-			 list.h list.c stack.h stack.c queue.h queue.c
+			 list.h list.c stack.h stack.c queue.h queue.c vicroads.txt
 #									add any new files here ^
 submission: $(SUBMISSION)
 	tar -czvf $(STUDENTNUM).tar.gz $(SUBMISSION)

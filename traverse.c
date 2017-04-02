@@ -26,10 +26,10 @@ to verify Output. Ugly, but it works. */
 
 /*****************************************************************************/
 
-void print_path(Graph* graph, list_t* path)
-/* Prints all the items in the path list. */
+static void print_path(Graph* graph, list_t* path)
+/* Prints all the items in the path stack. */
 {
-	node_t* c_node = (node_t*)malloc(sizeof(node_t));
+	node_t* c_node;
 
 	c_node = path->foot;
 
@@ -38,15 +38,16 @@ void print_path(Graph* graph, list_t* path)
 		c_node = c_node->last;
 	}
 	printf("%s\n", graph->vertices[c_node->data]->label);
+
 }
 
 /*****************************************************************************/
 
-void print_all_paths_recurse(Graph* graph, int u_id, int destination_id, 
+static void print_all_paths_recurse(Graph* graph, int u_id, int destination_id,
 	int* visited, list_t* path)
 /* Recursive Element of Part 4 */
 {
-    int i;
+    /* VARIBALE DECLARATIONS */
     Edge *cur_edge, *n_edge;
 
     cur_edge = graph->vertices[u_id]->first_edge;
@@ -63,53 +64,19 @@ void print_all_paths_recurse(Graph* graph, int u_id, int destination_id,
         /* If not destination, recurse for all adjacent vertices. */
 		while(cur_edge) {
 			if(!visited[cur_edge->v]) {
-				print_all_paths_recurse(graph, cur_edge->v, destination_id, 
+				print_all_paths_recurse(graph, cur_edge->v, destination_id,
 					visited, path);
 			}
+            /* Next Edge assignment */
 			cur_edge = n_edge;
 			if(cur_edge) {
 				n_edge = n_edge->next_edge;
 			}
 		}
 	}
+    /* Backtrack a level */
 	pop(path);
 	visited[u_id] = 0;
-}
-
-/*****************************************************************************/
-
-int min2(int i1, int i2)
-/* Returns the minimum of 2 integers */
-{
-    if(i1 < i2) {
-        return i1;
-    }
-    return i2;
-}
-
-/*****************************************************************************/
-
-int minD(int* arr, int* Q, int arr_size)
-/* Returns the index of the minimum Vertex */
-{
-    int ind, c_min = -1, i;
-    for(i=0; i<arr_size; i++) {
-        /* Skip if not in Q */
-        if(!Q[i]) {
-            continue;
-        }
-        /* Rewrite the minimum if c_min is still inf */
-        if(c_min == -1) {
-            c_min = arr[i];
-            ind = i;
-            continue;
-        }
-        if(arr[i] <= c_min) {
-            c_min = arr[i];
-            ind = i;
-        }
-    }
-    return ind;
 }
 
 /*****************************************************************************/
@@ -122,7 +89,7 @@ void print_dfs(Graph* graph, int source_id)
     int cur_vert_id = source_id, order = graph->maxn;
     int new_vert_id, i;
     Edge *new_edge;
-    int* visit;
+    int* visited;
 
     /* Stack Def */
     list_t* dep_stack;
@@ -130,25 +97,25 @@ void print_dfs(Graph* graph, int source_id)
 
     /* Error detection, just in case.  */
     if(!dep_stack) {
-    	fprintf(stderr, "ERROR: New Stack could not be created!");
-    	exit(FAIL);
+        fprintf(stderr, "ERROR: New Stack could not be created!");
+        exit(FAIL);
     }
 
-    /* Create Array to store Visited values in. */
-    visit = (int*)malloc((order)*sizeof(int));
+    /* Create Array to store visited values in. */
+    visited = (int*)malloc((order)*sizeof(int));
     for(i=0; i<order; i++) {
-        visit[i] = 0;
+        visited[i] = 0;
     }
 
     /* Complete operations on the Source Vertex.*/
     push(dep_stack, cur_vert_id);
     printf("%s\n", graph->vertices[source_id]->label);
-    visit[source_id] = 1;
+    visited[source_id] = 1;
 
     /* The loop operates for as long as the stack is non-empty.  */
     while(stack_size(dep_stack)) {
-    	/* Remove the current vertex from the stack,
-    	 * Set vars to it's first edge. */
+        /* Remove the current vertex from the stack,
+         * Set vars to it's first edge. */
         cur_vert_id = pop(dep_stack);
         new_edge = graph->vertices[cur_vert_id]->first_edge;
         new_vert_id = new_edge->v;
@@ -156,8 +123,8 @@ void print_dfs(Graph* graph, int source_id)
         /* Ensure that the algorithm runs once the edges run out. */
         while(new_edge) {
         	/* Only visit new vertices. */
-            if(!(visit[new_vert_id])) {
-                visit[new_vert_id] = 1;
+            if(!(visited[new_vert_id])) {
+                visited[new_vert_id] = 1;
                 /* Print and push the vertex onto the stack. */
                 printf("%s\n", graph->vertices[new_vert_id]->label);
                 push(dep_stack, new_edge->v);
@@ -175,7 +142,7 @@ void print_dfs(Graph* graph, int source_id)
         }
     }
     /* Return all the borrowed memory you filthy kleptomaniac. */
-    free(visit);
+    free(visited);
     purge_stack(dep_stack);
 }
 
@@ -250,7 +217,7 @@ void detailed_path(Graph* graph, int source_id, int destination_id)
     int new_vert_id, i;
     int cu_weight = 0, flag_dest = 0;
     Edge *new_edge;
-    int* visit;
+    int* visited;
 
     /* Stack Def */
     list_t* dep_stack;
@@ -262,21 +229,26 @@ void detailed_path(Graph* graph, int source_id, int destination_id)
     	exit(FAIL);
     }
 
-    /* Create Array to store Visited values in. */
-    visit = (int*)malloc((order)*sizeof(int));
+    if(source_id == destination_id) {
+    	printf("%s (0km)\n", graph->vertices[source_id]->label);
+    	exit(EXIT_SUCCESS);
+    }
+
+    /* Create Array to store visited values in. */
+    visited = (int*)malloc((order)*sizeof(int));
     for(i=0; i<order; i++) {
-        visit[i] = 0;
+        visited[i] = 0;
     }
 
     /* Complete operations on the Source Vertex.*/
     push(dep_stack, cur_vert_id);
     printf("%s (0km)\n", graph->vertices[source_id]->label);
-    visit[source_id] = 1;
+    visited[source_id] = 1;
 
     /* The loop operates for as long as the stack is non-empty.  */
     while(!flag_dest && stack_size(dep_stack)) {
-    	/* Remove the current vertex from the stack,
-    	 * Set vars to it's first edge. */
+        /* Remove the current vertex from the stack,
+         * Set vars to it's first edge. */
         cur_vert_id = pop(dep_stack);
 
         new_edge = graph->vertices[cur_vert_id]->first_edge;
@@ -284,9 +256,9 @@ void detailed_path(Graph* graph, int source_id, int destination_id)
 
         /* Ensure that the algorithm runs once the edges run out. */
         while(new_edge) {
-        	/* Only visit new vertices. */
-            if(!(visit[new_vert_id])) {
-                visit[new_vert_id] = 1;
+            /* Only visit new vertices. */
+            if(!(visited[new_vert_id])) {
+                visited[new_vert_id] = 1;
                 /* Update the cumulative weight */
                 cu_weight += new_edge->weight;
                 /* Print and push the vertex onto the stack. */
@@ -295,30 +267,30 @@ void detailed_path(Graph* graph, int source_id, int destination_id)
                 /**/
                 if(new_vert_id == destination_id) {
                      flag_dest = 1;
-                     break;
+                     exit(EXIT_SUCCESS);
                  }
                 push(dep_stack, new_edge->v);
                 /* Hop to the next vertex. */
                 new_edge = graph->vertices[new_vert_id]->first_edge;
                 new_vert_id = new_edge->v;
             } else {
-            	/* Hop to the next vertex if it's been visited. */
+                /* Hop to the next vertex if it's been visited. */
                 new_edge = new_edge->next_edge;
                 /* Make sure you can actually get the vertext id. */
                 if(new_edge) {
-                	new_vert_id = new_edge->v;
+                    new_vert_id = new_edge->v;
                 }
             }
         }
     }
     /* Return all the borrowed memory you filthy kleptomaniac. */
-    free(visit);
+    free(visited);
     purge_stack(dep_stack);
 }
 
 /*****************************************************************************/
 
-void all_paths(Graph* graph, int source_id, int destination_id) 
+void all_paths(Graph* graph, int source_id, int destination_id)
 /* Recursively prints all paths between source and destination. Code based on:
  * http://www.geeksforgeeks.org/find-paths-given-source-destination
  */
@@ -336,6 +308,8 @@ void all_paths(Graph* graph, int source_id, int destination_id)
     /* Call the Recursive element of the algrithm */
 	print_all_paths_recurse(graph, source_id, destination_id, visited, path);
 
+    /* Free any taken memory, you don't wanna be caught with invalid memory ;)
+    */
     free(visited);
     purge_stack(path);
 }
@@ -349,13 +323,21 @@ void shortest_path(Graph* graph, int source_id, int destination_id)
 {
     /* VARIABLE DECLARATIONS */
     int cur_id, source_vert_id = source_id;
-    int i, child_vert_id, alt, Q_size = graph->maxn;
+    int i, child_vert_id, alt;
     int* dist = (int*)malloc((graph->maxn)*sizeof(int));
     int* prev = (int*)malloc((graph->maxn)*sizeof(int));
-    int* Q = (int*)malloc((graph->maxn)*sizeof(int));
+    list_t* Q = new_queue();
     Edge *cur_edge, *n_edge;
     list_t* path_stack;
 
+    /* Check for similar inputs and outputs so it doesn't segfault */
+    if(source_id == destination_id) {
+    	printf("%s (0km)\n", graph->vertices[source_id]->label);
+    	exit(EXIT_SUCCESS);
+    }
+
+    /* Add the source to the queue */
+    enqueue(Q, source_vert_id);
     dist[source_vert_id] = 0;
 
     /* Set all distances & 'previous vals' to "infinity" (or negative 1)
@@ -364,27 +346,29 @@ void shortest_path(Graph* graph, int source_id, int destination_id)
         if(i != source_vert_id) {
             dist[i] = -1;
             prev[i] = -1;
-            Q[i] = 1;
         }
     }
 
     /* Commence The Algorithm! Runs for as long as the queue is populated */
-    while(Q_size != 0) {
-        source_vert_id = minD(dist, Q, graph->maxn);
-        Q[source_vert_id] = 0;
-        Q_size -= 1;
-
+    while(queue_size(Q)) {
+        source_vert_id = dequeue(Q);
+        
+        /* Set up edges for moving */
         cur_edge = graph->vertices[source_vert_id]->first_edge;
         child_vert_id = cur_edge->v;
         n_edge = cur_edge->next_edge;
 
-        printf("cur_vert = %s\n", graph->vertices[source_vert_id]->label);
+        /* Loop through all the connected edges and adjust the distances and 
+         * the previous node values. Enqueue anything that's changed to review
+         * the distances of its children. */
         while(cur_edge) {
             alt = dist[source_vert_id] + cur_edge->weight;
             if((alt < dist[child_vert_id]) || (dist[child_vert_id] == -1)) {
                 dist[child_vert_id] = alt;
                 prev[child_vert_id] = source_vert_id;
+                enqueue(Q, child_vert_id);
             }
+            /* Move to the next edge set. */
             cur_edge = n_edge;
             if(cur_edge) {
                 child_vert_id = cur_edge->v;
@@ -393,22 +377,26 @@ void shortest_path(Graph* graph, int source_id, int destination_id)
         }
     }
 
-    for(i=0; i<graph->maxn; i++) {
-        printf("%s: prev = %s (%dkm)\n", graph->vertices[i]->label,  
-                graph->vertices[prev[i]]->label, dist[i]);
-    }
+    /* Loop back through the previous nodes and add them to the stack. Break
+     * once the Source id is found. */
     cur_id = prev[destination_id];
     path_stack = new_stack();
-    while(cur_id != source_id) {
+    while(1) {
         push(path_stack, cur_id);
+        if(cur_id == source_id) {
+        	break; 
+        }
         cur_id = prev[cur_id];
     }
+
+    /* Print out the stack. */
     while(stack_size(path_stack)) {
         printf("%s, ", graph->vertices[pop(path_stack)]->label);
     }
-    printf("%s (%dkm)", graph->vertices[destination_id]->label, 
+    printf("%s (%dkm)\n", graph->vertices[destination_id]->label,
             dist[destination_id]);
-    free(Q);
+    /* Free the stolen memory */
+    queue_purge(Q);
     free(dist);
     free(prev);
     free_list(path_stack);
@@ -416,31 +404,3 @@ void shortest_path(Graph* graph, int source_id, int destination_id)
 
 /*****************************************************************************/
 
-/*
-Pseudo Code for Dijkstra's Algorithm
-
-   function Dijkstra(Graph, source):
-       dist[source]  := 0                     // Distance from source to source
-       for each vertex v in Graph:            // Initializations
-           if v ≠ source
-               dist[v]  := infinity           // Unknown distance function from source to v
-               previous[v]  := undefined      // Previous node in optimal path from source
-           end if
-           add v to Q                         // All nodes initially in Q
-       end for
-
-      while Q is not empty:                  // The main loop
-          u := vertex in Q with min dist[u]  // Source node in first case
-          remove u from Q
-
-          for each neighbor v of u:           // where v has not yet been removed from Q.
-              alt := dist[u] + length(u, v)
-              if alt < dist[v]:               // A shorter path to v has been found
-                  dist[v]  := alt
-                  previous[v]  := u
-              end if
-          end for
-      end while
-      return dist[], previous[]
-  end function
-*/
